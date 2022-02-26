@@ -8,6 +8,7 @@ import com.taskdash.taskdash.repository.RoleRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,12 +17,14 @@ public class RoleController {
     @Autowired
     private RoleRepository roleRepository;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/api/v1/roles")
     public @ResponseBody ResponseEntity<Iterable<Role>> find() {
         Iterable<Role> roles = roleRepository.findAll();
         return ResponseEntity.ok().body(roles);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/api/v1/roles/{id}")
     public @ResponseBody ResponseEntity<Role> getid(@PathVariable int id) {
         Optional<Role> result = roleRepository.findById(id);
@@ -31,6 +34,7 @@ public class RoleController {
         return ResponseEntity.ok().body(role);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/api/v1/roles")
     public @ResponseBody ResponseEntity<Role> createproject(@RequestBody RoleRequest requestDto) {
         Role role = new Role();
@@ -39,6 +43,7 @@ public class RoleController {
         return ResponseEntity.ok().body((role));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/api/v1/roles/{id}")
     public @ResponseBody ResponseEntity<Role> modifyProject(@PathVariable int id,
             @RequestBody RoleRequest requestDto) {
@@ -52,6 +57,7 @@ public class RoleController {
         return ResponseEntity.ok().body((role));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/api/v1/roles/{id}")
     public @ResponseBody ResponseEntity<Role> delete(@PathVariable int id) {
         Optional<Role> result = roleRepository.findById(id);

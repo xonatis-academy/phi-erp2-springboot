@@ -11,6 +11,7 @@ import com.taskdash.taskdash.repository.RoleRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,13 +24,15 @@ public class AppUserController {
     @Autowired 
     private RoleRepository roleRepository;
 
-    @GetMapping("/api/v1/appusers")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/api/v1/users")
     public @ResponseBody ResponseEntity<Iterable<AppUser>> find() {
         Iterable<AppUser> users = appUserRepository.findAll();
         return ResponseEntity.ok().body(users);
     }
 
-    @GetMapping("/api/v1/appuser/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/api/v1/users/{id}")
     public @ResponseBody ResponseEntity<AppUser> getid(@PathVariable int id) {
         Optional<AppUser> result = appUserRepository.findById(id);
         if (result.isEmpty())
@@ -38,7 +41,8 @@ public class AppUserController {
         return ResponseEntity.ok().body(appuser);
     }
 
-    @PostMapping("/api/v1/appusers")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/api/v1/users")
     public @ResponseBody ResponseEntity<AppUser> createproject(@RequestBody AppUserRequest requestDto) {
         AppUser appUser = new AppUser();
         appUser.setUsername(requestDto.getUsername());
@@ -47,7 +51,8 @@ public class AppUserController {
         return ResponseEntity.ok().body((appUser));
     }
 
-    @PutMapping("/api/v1/appusers/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/api/v1/users/{id}")
     public @ResponseBody ResponseEntity<AppUser> modifyProject(@PathVariable int id,
             @RequestBody AppUserRequest requestDto) {
         Optional<AppUser> result = appUserRepository.findById(id);
@@ -61,7 +66,8 @@ public class AppUserController {
         return ResponseEntity.ok().body((appUser));
     }
 
-    @DeleteMapping("/api/v1/appusers/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/api/v1/users/{id}")
     public @ResponseBody ResponseEntity<AppUser> delete(@PathVariable int id) {
         Optional<AppUser> result = appUserRepository.findById(id);
         if (result.isEmpty())
@@ -70,7 +76,8 @@ public class AppUserController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/api/v1/appusers/{id}/roles")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/api/v1/users/{id}/roles")
     public @ResponseBody ResponseEntity<AppUser> createtasksUser(@PathVariable int id,
             @RequestBody AppUserRoleRequest userRoleDto) {
         Optional<AppUser> resultUser = appUserRepository.findById(id); 
@@ -88,7 +95,8 @@ public class AppUserController {
         return ResponseEntity.ok().body((user)); 
     }
 
-    @DeleteMapping("/api/v1/appusers/{id}/roles/{roleId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/api/v1/users/{id}/roles/{roleId}")
     public @ResponseBody ResponseEntity<AppUser> deleteTaskUser(@PathVariable int id, @PathVariable int roleId) {
         Optional<AppUser> result = appUserRepository.findById(id); 
         if (result.isEmpty())
@@ -101,4 +109,5 @@ public class AppUserController {
         appUserRepository.save(user);
         return ResponseEntity.ok().build();
     }
+    
 }

@@ -13,6 +13,7 @@ import com.taskdash.taskdash.repository.TaskRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,12 +27,14 @@ public class TaskController {
     @Autowired
     private AppUserRepository appUserRepository;
 
+    @PreAuthorize("hasAnyRole('ROLE_DEVELOPER', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     @GetMapping("/api/v1/tasks")
     public @ResponseBody ResponseEntity<Iterable<Task>> find() {
         Iterable<Task> tasks = taskRepository.findAll();
         return ResponseEntity.ok().body(tasks);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_DEVELOPER', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     @GetMapping("/api/v1/tasks/{id}")
     public @ResponseBody ResponseEntity<Task> getid(@PathVariable int id) {
         Optional<Task> result = taskRepository.findById(id);
@@ -41,6 +44,7 @@ public class TaskController {
         return ResponseEntity.ok().body(tasks);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_DEVELOPER', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     @PostMapping("/api/v1/tasks")
     public @ResponseBody ResponseEntity<Task> createtasks(@RequestBody TaskRequest taskDto) {
         Task tasks = new Task();
@@ -56,6 +60,7 @@ public class TaskController {
         return ResponseEntity.ok().body((tasks));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_DEVELOPER', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     @PutMapping("/api/v1/tasks/{id}")
     public @ResponseBody ResponseEntity<Task> modifytasks(@PathVariable int id,
             @RequestBody TaskRequest taskDto) {
@@ -76,6 +81,7 @@ public class TaskController {
         return ResponseEntity.ok().body((tasks));
     }
     
+    @PreAuthorize("hasAnyRole('ROLE_DEVELOPER', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     @DeleteMapping("/api/v1/tasks/{id}")
     public @ResponseBody ResponseEntity<Task> delete(@PathVariable int id) {
         Optional<Task> result = taskRepository.findById(id);
@@ -90,6 +96,7 @@ public class TaskController {
      * GESTION DES ACTEURS D'UNE TACHE
      */
 
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
     @PostMapping("/api/v1/tasks/{id}/actors")
     public @ResponseBody ResponseEntity<Task> createtasksUser(@PathVariable int id,
             @RequestBody TaskAppUserRequest taskUserDto) {
@@ -109,6 +116,7 @@ public class TaskController {
         return ResponseEntity.ok().body((task)); 
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
     @DeleteMapping("/api/v1/tasks/{id}/actors/{userId}")
     public @ResponseBody ResponseEntity<Task> deleteTaskUser(@PathVariable int id, @PathVariable int userId) {
         Optional<Task> result = taskRepository.findById(id); 
